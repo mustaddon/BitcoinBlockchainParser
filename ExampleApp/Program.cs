@@ -1,7 +1,7 @@
 ﻿using BitcoinBlockchainParser;
 
 
-var blockchain = new Blockchain(@"D:\School\bitrich");
+var blockchain = new Blockchain(@"C:\Bitcoin\blocks");
 
 
 /// Unordered Blocks

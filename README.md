@@ -1,4 +1,4 @@
-# BitcoinBlockchainParser [![NuGet version](https://badge.fury.io/nu/BitcoinBlockchainParser.svg?1000)](http://badge.fury.io/nu/BitcoinBlockchainParser)
+# BitcoinBlockchainParser [![NuGet version](https://badge.fury.io/nu/BitcoinBlockchainParser.svg?10)](http://badge.fury.io/nu/BitcoinBlockchainParser)
 .NET Library provides parsing functionality over files containing the Bitcoin blockchain.
 
 ## Features
@@ -16,7 +16,7 @@ Below are two basic examples for parsing the blockchain.
 ### Unordered Blocks
 This blockchain parser parses raw blocks saved in Bitcoin Core's `blk` file format. 
 Bitcoin Core does not guarantee that these blocks are saved in order. 
-If your application does not require that blocks are parsed in order, the `EnumerateBlocks` method can be used
+If your application does not require that blocks are parsed in order, the `EnumerateBlocks` method can be used.
 
 ```C#
 using BitcoinBlockchainParser;

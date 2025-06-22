@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>netstandard2.1;net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<LangVersion>latest</LangVersion>
+	<SignAssembly>true</SignAssembly>
+	<AssemblyOriginatorKeyFile>..\BitcoinBlockchainParser.snk</AssemblyOriginatorKeyFile>
+	<AssemblyVersion>1.0.0</AssemblyVersion>
+	<FileVersion>1.0.0</FileVersion>
+	<Version>1.0.0</Version>
+	<Company></Company>
+	<Authors>Leonid Salavatov</Authors>
+	<Copyright>Leonid Salavatov 2025</Copyright>
+	<PackageId>BitcoinBlockchainParser</PackageId>
+	<Product>BitcoinBlockchainParser</Product>
+	<Title>BitcoinBlockchainParser</Title>
+	<Description>Bitcoin blockchain parser</Description>
+	<PackageTags>bitcoin blockchain parser reader blocks</PackageTags>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageProjectUrl>https://github.com/mustaddon/BitcoinBlockchainParser</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/mustaddon/BitcoinBlockchainParser</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<NeutralLanguage />
+	<PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+
+</Project>

@@ -1,4 +1,4 @@
-# BitcoinBlockchainParser [![NuGet version](https://badge.fury.io/nu/BitcoinBlockchainParser.svg?100)](http://badge.fury.io/nu/BitcoinBlockchainParser)
+# BitcoinBlockchainParser [![NuGet version](https://badge.fury.io/nu/BitcoinBlockchainParser.svg?1000)](http://badge.fury.io/nu/BitcoinBlockchainParser)
 .NET Library provides parsing functionality over files containing the Bitcoin blockchain.
 
 ## Features
@@ -29,7 +29,7 @@ foreach (var block in blockchain.EnumerateBlocks().Take(5))
 
     foreach (var tx in block.Transactions.Take(3))
     {
-        Console.WriteLine($"   TX: {tx.TXID}  Inputs: {tx.Inputs.Length}  Outputs: {tx.Outputs.Length}");
+        Console.WriteLine($"   TX: {tx.TXID}  Ins: {tx.Inputs.Length}  Outs: {tx.Outputs.Length}");
     }
 
     Console.WriteLine();

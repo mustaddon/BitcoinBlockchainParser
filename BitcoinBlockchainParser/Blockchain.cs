@@ -4,12 +4,6 @@ public class Blockchain(string blocksDir, Network? network = null)
 {
     private readonly Network _network = network ?? Network.Default;
 
-    private readonly Lazy<byte[]?> _xor = new(() =>
-    {
-        var path = Path.GetFullPath(Path.Combine(blocksDir, "xor.dat"));
-        return File.Exists(path) ? File.ReadAllBytes(path) : null;
-    });
-
     public IEnumerable<BlockFiled> EnumerateBlocks()
     {
         foreach (var file in GetBlkFiles())
@@ -24,26 +18,27 @@ public class Blockchain(string blocksDir, Network? network = null)
         var lastHash = _zeroblock;
         var lastTime = DateTime.MinValue;
         var buffer = new Dictionary<HashId, BlockFiled>();
-        var index = 0;
+        var fileIndex = -1;
+        var blockIndex = -1;
 
         foreach (var file in GetBlkFiles())
         {
+            if (++fileIndex != GetBlkNumber(file))
+                break;
+
             foreach (var block in EnumerateFileBlocks(file))
             {
                 var prev = block.PreviousBlock;
 
                 if (!lastHash.Equals(prev))
                 {
-                    if (buffer.Count > 200000)
-                        throw new OperationCanceledException($"Could not find block #{index}.");
-
                     buffer[prev] = block;
                     continue;
                 }
 
                 lastHash = new(block.Hash);
                 lastTime = block.Time;
-                yield return new(block.Raw, block.FilePosition, index++);
+                yield return new(block.Raw, block.FilePosition, ++blockIndex);
 
                 while (buffer.TryGetValue(lastHash, out var next))
                 {
@@ -53,19 +48,21 @@ public class Blockchain(string blocksDir, Network? network = null)
 
                     if (next.FilePosition.Number == block.FilePosition.Number)
                     {
-                        yield return new(next.Raw, next.FilePosition, index++);
+                        yield return new(next.Raw, next.FilePosition, ++blockIndex);
                     }
                     else
                     {
                         using var stream = new BlkFileStream(next.FilePosition.File, _xor.Value, _network);
                         stream.Position = next.FilePosition.Position;
-                        yield return new(new BlockReader(stream, _network).Read()!.Raw, next.FilePosition, index++);
+                        yield return new(new BlockReader(stream, _network).Read()!.Raw, next.FilePosition, ++blockIndex);
                     }
                 }
             }
         }
-    }
 
+        if (blockIndex < 0)
+            throw new OperationCanceledException($"Could not find block #0.");
+    }
 
     public IEnumerable<BlockFiled> EnumerateFileBlocks(int file)
     {
@@ -90,6 +87,12 @@ public class Blockchain(string blocksDir, Network? network = null)
             yield return new(block.Raw, new(filepath, num, pos));
         }
     }
+
+    private readonly Lazy<byte[]?> _xor = new(() =>
+    {
+        var path = Path.GetFullPath(Path.Combine(blocksDir, "xor.dat"));
+        return File.Exists(path) ? File.ReadAllBytes(path) : null;
+    });
 
     private IEnumerable<string> GetBlkFiles()
     {

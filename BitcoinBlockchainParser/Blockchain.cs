@@ -4,11 +4,20 @@ public class Blockchain(string blocksDir, Network? network = null)
 {
     private readonly Network _network = network ?? Network.Default;
 
-    public IEnumerable<BlockFiled> EnumerateBlocks()
+    public IEnumerable<BlockFiled> EnumerateBlocks() => EnumerateBlocks(0, 0);
+
+    public IEnumerable<BlockFiled> EnumerateBlocks(int startFile, long position = 0)
     {
         foreach (var file in GetBlkFiles())
-            foreach (var block in EnumerateFileBlocks(file))
+        {
+            var num = GetBlkNumber(file) ?? -1;
+
+            if (num < startFile)
+                continue;
+
+            foreach (var block in EnumerateFileBlocks(file, num, num == startFile ? position : 0))
                 yield return block;
+        }
     }
 
     private static readonly HashId _zeroblock = new(new byte[32]);
@@ -23,10 +32,12 @@ public class Blockchain(string blocksDir, Network? network = null)
 
         foreach (var file in GetBlkFiles())
         {
-            if (++fileIndex != GetBlkNumber(file))
+            var num = GetBlkNumber(file) ?? -1;
+
+            if (++fileIndex != num)
                 break;
 
-            foreach (var block in EnumerateFileBlocks(file))
+            foreach (var block in EnumerateFileBlocks(file, num, 0))
             {
                 var prev = block.PreviousBlock;
 
@@ -64,16 +75,25 @@ public class Blockchain(string blocksDir, Network? network = null)
             throw new OperationCanceledException($"Could not find block #0.");
     }
 
-    public IEnumerable<BlockFiled> EnumerateFileBlocks(int file)
+    public IEnumerable<BlockFiled> EnumerateFileBlocks(int file, long position = 0)
     {
         var filepath = GetBlkFiles().FirstOrDefault(x => GetBlkNumber(x) == file);
-        return filepath == null ? [] : EnumerateFileBlocks(filepath);
+
+        if (filepath == null)
+            return [];
+
+        return EnumerateFileBlocks(filepath, file, position);
     }
 
-    public IEnumerable<BlockFiled> EnumerateFileBlocks(string filepath)
+    public IEnumerable<BlockFiled> EnumerateFileBlocks(string filepath, long position = 0)
+    {
+        return EnumerateFileBlocks(filepath, GetBlkNumber(filepath) ?? -1, position);
+    }
+
+    private IEnumerable<BlockFiled> EnumerateFileBlocks(string filepath, int num, long position)
     {
         using var stream = new BlkFileStream(filepath, _xor.Value, _network);
-        var num = GetBlkNumber(filepath) ?? -1;
+        stream.Position = position;
         var reader = new BlockReader(stream, _network);
 
         while (true)

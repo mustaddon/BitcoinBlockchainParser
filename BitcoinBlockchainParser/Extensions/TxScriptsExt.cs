@@ -1,8 +1,8 @@
 ﻿using BitcoinBlockchainParser.Encoders;
 
-namespace BitcoinBlockchainParser;
+namespace BitcoinBlockchainParser.Extensions;
 
-internal static class TxScripts
+internal static class TxScriptsExt
 {
     public static TxoScriptType GetScriptType(this byte[] scriptPubKey)
     {
@@ -57,7 +57,7 @@ internal static class TxScripts
         if (bytes.Length != 20)
             return null;
 
-        var checksum = Hashes.HASH256(bytes = [network.AddressPKH, .. bytes])[0..4];
+        var checksum = (bytes = [network.AddressPKH, .. bytes]).HASH256()[0..4];
         return Base58.ToBase58([.. bytes, .. checksum]);
     }
 
@@ -66,8 +66,7 @@ internal static class TxScripts
         if (bytes.Length != 20)
             return null;
 
-        var checksum = Hashes.HASH256(bytes = [network.AddressSH, .. bytes])[0..4];
+        var checksum = (bytes = [network.AddressSH, .. bytes]).HASH256()[0..4];
         return Base58.ToBase58([.. bytes, .. checksum]);
     }
-
 }

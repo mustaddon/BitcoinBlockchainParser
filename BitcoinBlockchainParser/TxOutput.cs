@@ -32,9 +32,9 @@ public class TxOutput(TxOutputRaw raw, Network network)
     private string? _address;
     public string? Address => _address ??= Type switch
     {
-        TxoScriptType.P2PK => PubHash?.ToAddressP2PKH(network),
-        TxoScriptType.P2PKH => PubHash?.ToAddressP2PKH(network),
-        TxoScriptType.P2SH => ScriptHash?.ToAddressP2SH(network),
+        TxoScriptType.P2PK => PubKey?.ToHex(),
+        TxoScriptType.P2PKH => PubHash?.ToBase58Address(network.AddressPKH),
+        TxoScriptType.P2SH => ScriptHash?.ToBase58Address(network.AddressSH),
         TxoScriptType.P2WPKH => PubHash?.ToBench32(network),
         TxoScriptType.P2WSH => ScriptHash?.ToBench32(network),
         TxoScriptType.P2TR => Taproot?.ToBench32(network, 1),

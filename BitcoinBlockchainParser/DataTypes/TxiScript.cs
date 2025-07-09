@@ -2,11 +2,9 @@
 
 namespace BitcoinBlockchainParser.DataTypes;
 
-public readonly struct TxoScript(byte[] bytes)
+public readonly struct TxiScript(byte[] bytes)
 {
     public byte[] Bytes => bytes;
-
-    public TxoScriptType Type => bytes.GetScriptType();
 
     public string ToHex() => bytes.ToHex();
 

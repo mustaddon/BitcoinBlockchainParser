@@ -1,4 +1,5 @@
 ﻿using BitcoinBlockchainParser.Encoders;
+using System.Net.WebSockets;
 
 namespace BitcoinBlockchainParser.Extensions;
 
@@ -6,8 +7,11 @@ internal static class TxScriptsExt
 {
     public static TxoScriptType GetScriptType(this byte[] scriptPubKey)
     {
-        if ((scriptPubKey.Length == 35 || scriptPubKey.Length == 67)
-            && scriptPubKey[0] == 0x41 && scriptPubKey[^1] == 0xac)
+        scriptPubKey = scriptPubKey.TrimNops();
+
+        if (((scriptPubKey.Length == 67 && scriptPubKey[0] == 0x41) 
+            || (scriptPubKey.Length == 35 && scriptPubKey[0] == 0x21))
+            && scriptPubKey[^1] == 0xac)
             return TxoScriptType.P2PK;
 
         if (scriptPubKey.Length == 22
@@ -45,12 +49,32 @@ internal static class TxScriptsExt
         return TxoScriptType.Unknown;
     }
 
-    public static byte[] GetPK(this byte[] scriptPubKey) => scriptPubKey[1..^1];
-    public static byte[] GetPKH(this byte[] scriptPubKey) => scriptPubKey[3..^2];
-    public static byte[] GetSH(this byte[] scriptPubKey) => scriptPubKey[2..^1];
-    public static byte[] GetWPKH(this byte[] scriptPubKey) => scriptPubKey[2..];
-    public static byte[] GetWSH(this byte[] scriptPubKey) => scriptPubKey[2..];
-    public static byte[] GetTR(this byte[] scriptPubKey) => scriptPubKey[2..];
+    static byte[] TrimNops(this byte[] script)
+    {
+        int i = 0;
+
+        for (; i < script.Length; i++)
+            if (script[i] != (byte)Opcodes.OP_NOP)
+                break;
+
+        int j = script.Length - 1;
+
+        for (; j > i; j--)
+            if (script[j] != (byte)Opcodes.OP_NOP)
+                break;
+
+        if (i == 0 && j == script.Length - 1)
+            return script;
+
+        return script[i..^(script.Length - 1 - j)];
+    }
+
+    public static byte[] GetPK(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[1..^1];
+    public static byte[] GetPKH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[3..^2];
+    public static byte[] GetSH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..^1];
+    public static byte[] GetWPKH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
+    public static byte[] GetWSH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
+    public static byte[] GetTR(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
 
     public static string? ToAddressP2PKH(this byte[] bytes, Network network)
     {

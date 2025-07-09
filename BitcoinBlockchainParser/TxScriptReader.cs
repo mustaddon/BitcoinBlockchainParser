@@ -43,26 +43,23 @@ public static class TxScriptReader
 
     public static string ReadToString(byte[] script)
     {
-        var result = new StringBuilder();
+        var result = new List<string>();
 
         try
         {
             foreach (var (Opcode, Data) in Read(script))
             {
-                result.AppendLine(Opcode.ToString());
+                result.Add(Opcode.ToString());
 
                 if (Data != null)
-                    result.AppendLine(Data.ToHex());
+                    result.Add(Data.ToHex());
             }
         }
         catch
         {
-            result.AppendLine("SCRIPT ERROR");
+            result.Add("SCRIPT ERROR");
         }
 
-        if (result.Length > 2)
-            result.Remove(result.Length - 2, 2);
-
-        return result.ToString();
+        return string.Join(" \n", result);
     }
 }

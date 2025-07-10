@@ -1,7 +1,4 @@
-﻿using BitcoinBlockchainParser.Encoders;
-using System.Net.WebSockets;
-
-namespace BitcoinBlockchainParser.Extensions;
+﻿namespace BitcoinBlockchainParser.Extensions;
 
 internal static class TxScriptsExt
 {
@@ -9,7 +6,7 @@ internal static class TxScriptsExt
     {
         scriptPubKey = scriptPubKey.TrimNops();
 
-        if (((scriptPubKey.Length == 67 && scriptPubKey[0] == 0x41) 
+        if (((scriptPubKey.Length == 67 && scriptPubKey[0] == 0x41)
             || (scriptPubKey.Length == 35 && scriptPubKey[0] == 0x21))
             && scriptPubKey[^1] == 0xac)
             return TxoScriptType.P2PK;
@@ -75,22 +72,4 @@ internal static class TxScriptsExt
     public static byte[] GetWPKH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
     public static byte[] GetWSH(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
     public static byte[] GetTR(this byte[] scriptPubKey) => scriptPubKey.TrimNops()[2..];
-
-    public static string? ToAddressP2PKH(this byte[] bytes, Network network)
-    {
-        if (bytes.Length != 20)
-            return null;
-
-        var checksum = (bytes = [network.AddressPKH, .. bytes]).HASH256()[0..4];
-        return Base58.ToBase58([.. bytes, .. checksum]);
-    }
-
-    public static string? ToAddressP2SH(this byte[] bytes, Network network)
-    {
-        if (bytes.Length != 20)
-            return null;
-
-        var checksum = (bytes = [network.AddressSH, .. bytes]).HASH256()[0..4];
-        return Base58.ToBase58([.. bytes, .. checksum]);
-    }
 }

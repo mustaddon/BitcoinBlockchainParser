@@ -2,7 +2,7 @@
 
 namespace BitcoinBlockchainParser.DataTypes;
 
-public readonly struct LeField(byte[] bytes) : IEquatable<LeField>
+public readonly struct LeField(byte[] bytes) : IEquatable<LeField>, IBytes
 {
     public byte[] Bytes => bytes;
     public string Text => "0x" + bytes.ToHexReversed();

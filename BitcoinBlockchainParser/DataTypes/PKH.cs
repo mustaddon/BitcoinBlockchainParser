@@ -1,6 +1,6 @@
 ﻿namespace BitcoinBlockchainParser.DataTypes;
 
-public readonly struct PKH(byte[] bytes20) : IEquatable<PKH>, IComparable<PKH>, IComparable
+public readonly struct PKH(byte[] bytes20) : IEquatable<PKH>, IComparable<PKH>, IComparable, IBytes
 {
     private readonly byte[] _bytes = bytes20.Length == 20 ? bytes20 : throw new ArgumentException(nameof(bytes20));
 

@@ -1,8 +1,6 @@
-﻿using BitcoinBlockchainParser.Encoders;
+﻿namespace BitcoinBlockchainParser.Extensions;
 
-namespace BitcoinBlockchainParser.Extensions;
-
-internal static class BytesExt
+public static class BytesExt
 {
     //static readonly DateTime _unixEpoch = new DateTime(621355968000000000, DateTimeKind.Utc);
 
@@ -29,7 +27,7 @@ internal static class BytesExt
         return bytes[0] | ((uint)bytes[1] << 8);
     }
 
-    public static int GetHashCode(this byte[] bytes, int seed)
+    internal static int GetHashCode(this byte[] bytes, int seed)
     {
         var hc = bytes.Length;
         foreach (var x in bytes)

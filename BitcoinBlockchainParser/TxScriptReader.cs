@@ -20,19 +20,19 @@ public static class TxScriptReader
             {
                 var count = script[i + 1];
                 yield return (opcode, script[(i + 2)..(i + 2 + count)]);
-                i += count;
+                i += count + 1;
             }
             else if (opcode == Opcodes.OP_PUSHDATA2)
             {
                 var count = (int)script[(i + 1)..(i + 3)].ToUint16();
                 yield return (opcode, script[(i + 3)..(i + 3 + count)]);
-                i += count;
+                i += count + 2;
             }
             else if (opcode == Opcodes.OP_PUSHDATA4)
             {
                 var count = (int)script[(i + 1)..(i + 5)].ToUint32();
                 yield return (opcode, script[(i + 5)..(i + 5 + count)]);
-                i += count;
+                i += count + 4;
             }
             else
             {

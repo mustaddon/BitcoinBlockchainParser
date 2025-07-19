@@ -23,7 +23,7 @@ foreach (var block in blockchain.EnumerateBlocks().Take(5))
 
 foreach (var block in blockchain.EnumerateBlocksOrdered().Skip(50).Take(20))
 {
-    Console.WriteLine($"Block #{block.Index} {block.Id}  Time: {block.Time:o}");
+    Console.WriteLine($"Block #{block.Height} {block.Id}  Time: {block.Time:o}");
 }
 
 
